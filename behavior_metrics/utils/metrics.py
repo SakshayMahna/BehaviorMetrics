@@ -190,8 +190,8 @@ def get_robot_position_deviation_score(perfect_lap_checkpoints, checkpoints, lap
         point_t.append(x)
 
     # Generate a natural spline from points
-    spline_x = CubicSpline(point_t, point_x, bc_type='natural')
-    spline_y = CubicSpline(point_t, point_y, bc_type='natural')
+    spline_x = CubicSpline(point_t, point_x, bc_type='clamped')
+    spline_y = CubicSpline(point_t, point_y, bc_type='clamped')
 
     # Rotate the x and y to start according to checkpoints
     min_dist = 100
