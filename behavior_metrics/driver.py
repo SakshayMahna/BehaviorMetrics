@@ -177,7 +177,7 @@ def main():
             if config_data['random']:
                 tmp_random_initializer(app_configuration.current_world, app_configuration.stats_perfect_lap,
                                        app_configuration.real_time_update_rate, randomize=True,
-                                       gui=True, launch=False)
+                                       gui=True, launch=False, camera_config = app_configuration.sensors['Cameras'])
                 app_configuration.current_world = 'tmp_circuit.launch'
             environment.launch_env(app_configuration.current_world)
 

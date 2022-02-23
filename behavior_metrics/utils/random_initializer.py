@@ -31,9 +31,20 @@ from utils import metrics
 from utils import environment
 from utils.logger import logger
 
+def model_initializer(current_model, camera_link, offset):
+    tree = ET.parse(current_model)
+    root = tree.getroot()
+    for child in root[0]:
+        if 'name' in child.attrib:
+            if child.attrib['name'] == camera_link:
+                pose = child[0].text.split()
+                pose[1] = str(float(pose[1]) + offset)
+                child[0].text = ' '.join(pose)
 
-def tmp_random_initializer(current_world, stats_perfect_lap, real_time_update_rate, randomize=False, gui=False,
-                           launch=False):
+    tree.write('temp_model.sdf')
+
+def tmp_random_initializer(current_world, stats_perfect_lap, real_time_update_rate, 
+                           camera_config = None, randomize=False, gui=False, launch=False):
     environment.close_gazebo()
     tree = ET.parse(current_world)
     root = tree.getroot()
@@ -89,6 +100,16 @@ def tmp_random_initializer(current_world, stats_perfect_lap, real_time_update_ra
     physics_element.set("type", "ode")
     real_time_update_rate_element = ET.SubElement(physics_element, 'real_time_update_rate')
     real_time_update_rate_element.text = str(real_time_update_rate)  # 1000 es the default value
+
+    # Initialize Camera
+    if camera_config['Modify']:
+        camera_conf = camera_config['Camera_0']
+        model_initializer(camera_conf['CurrentModel'], camera_conf['CameraLink'], camera_conf['Offset'])
+        for child_1 in root[0]:
+            if child_1.tag == 'include':
+                for child_2 in child_1:
+                    if child_2.text.find('f1') != -1:
+                        child_2.text =  os.getcwd() + '/temp_model.sdf'
 
     tree.write('tmp_world.launch')
     if launch:

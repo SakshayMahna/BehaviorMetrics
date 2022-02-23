@@ -105,6 +105,7 @@ class Brain:
             if 'NoiseType' in self.config:
                 image = add_noise(image, self.config['NoiseParams'], 
                         noise_type = self.config['NoiseType'])
+                self.update_frame('frame_1', image)
 
             image_cropped = image[230:, :, :]
             image_hsv = cv2.cvtColor(image_cropped, cv2.COLOR_BGR2HSV)
